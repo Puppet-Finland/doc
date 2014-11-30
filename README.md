@@ -58,7 +58,7 @@ Most operating system differences can be abstracted away using a *module::params
 The *modulenaname::params* approach has several benefits:
 
   * It isolates operating system -specific information into a single class, making the rest of the Puppet code much cleaner.
-  * Trying to include the module on an unsupported operating system (see the "default" block) will result in failure instead of a misconfiguration.
+  * Trying to include the module on an unsupported operating system (see the "default" block) will result in clean, early failure instead of a misconfiguration or partial configuration.
 
 
 Conditionals in entrypoint class
@@ -102,7 +102,14 @@ The two-pronged approach to handling operating system differences - params class
 Managing configuration complexity
 =================================
 
-Some applications are by their nature very large and flexible. This results in an astronomic number of potential configuration option combinations. Trying to cater for every possible use-case using a single Puppet module would result in huge mess. Some of the more widely used Puppet modules suffer from this "API explosion", which makes following the logic of the module very difficult. Fortunately there are three levels on which this complexity can be managed.
+Some applications are by their nature very large and flexible. Trying to cater for every possible use-case using a single Puppet module would result in huge mess due to astronomic number of configuration options and their combinations. Indeed, some of the more widely used Puppet modules suffer from this "API explosion", which causes many issues:
+
+  * Following the logic of the module becomes very difficult
+  * Changes to the code in one place can easily break some other (corner) use-case
+
+While it is possible to counter these negative effects with strict testing and release procedures, the underlying problem does not go away and the module will eventually for some people.
+
+The Puppet-Finland modules attempt to prevent API explosion and use three strategies to cope with configuration complexity, all of which are described below.
 
 Parameterization
 ----------------
