@@ -102,14 +102,14 @@ The two-pronged approach to handling operating system differences - params class
 Managing configuration complexity
 =================================
 
-Some applications are by their nature very large and flexible. Trying to cater for every possible use-case using a single Puppet module would result in huge mess due to astronomic number of configuration options and their combinations. Indeed, some of the more widely used Puppet modules suffer from this "API explosion", which causes many issues:
+Some applications are by their nature very large and flexible. Trying to cater for every possible use-case using a single Puppet module would result in huge mess due to astronomic number of configuration options and their combinations. Indeed, some of the more widely used Puppet modules suffer from this "API explosion" which causes many issues:
 
   * Following the logic of the module becomes very difficult
   * Changes to the code in one place can easily break some other (corner) use-case
 
-While it is possible to counter these negative effects with strict testing and release procedures, the underlying problem does not go away and the module will eventually for some people.
+While it is possible to counter these negative effects with strict testing and release procedures, the underlying problem does not go away and the module will eventually break for some people/use-cases.
 
-The Puppet-Finland modules attempt to prevent API explosion and use three strategies to cope with configuration complexity, all of which are described below.
+The Puppet-Finland modules attempt to prevent API explosions using the three strategies described below.
 
 Parameterization
 ----------------
