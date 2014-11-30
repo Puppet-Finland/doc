@@ -1,9 +1,7 @@
 doc
 ===
 
-This repository contains documentation for the [Puppet-Finland](https://github.com/Puppet-Finland "Puppet-Finland") repository.
-
-In particular coding conventions and practices are covered in detail. This file is written using the [MarkDown syntax](http://daringfireball.net/projects/markdown/syntax "MarkDown syntax").
+This repository contains generic documentation for the [Puppet-Finland](https://github.com/Puppet-Finland "Puppet-Finland") project. In particular coding conventions and practices are covered in detail. This file is written using the [MarkDown syntax](http://daringfireball.net/projects/markdown/syntax "MarkDown syntax").
 
 This document is still work in progress, but the most important bits and pieces are there.
 
@@ -54,12 +52,17 @@ Most operating system differences can be abstracted away using a *module::params
         }
     }
 
-This approach has several benefits:
+The *modulenaname::params* approach has several benefits:
 
-  * It isolates operating system -specific information into a single class, making the rest of the Puppet code much cleaner
+  * It isolates operating system -specific information into a single class, making the rest of the Puppet code much cleaner.
   * Trying to include the module on an unsupported operating system (see the "default" block) will result in failure instead of a misconfiguration.
 
-Use of a params class is not always enough, however. It could be that some operating systems can't be configured to the same extent as others, or that some operatings system requires additional configuration steps. A real-life example is shown below:
+Use of a params class is not always enough, however:
+
+  * Some operating systems can't (in practice) be configured as fully as others.
+  * Some operatings system require additional configuration steps.
+
+A real-life example is shown below:
 
     # Do not attempt to configure postfix on OpenSuSE because of YaST
     if $::operatingsystem == 'OpenSuSE' {
@@ -87,18 +90,32 @@ Use of a params class is not always enough, however. It could be that some opera
         }
     }
 
-This approach to handling major operating system differences has proven itself in practice.
+This two-pronged approach to handling operating system differences has proven itself in practice.
 
 Managing configuration complexity
 =================================
 
-Some applications are by their nature very large and flexible. This results in an astronomic number of configuration option combinations. Trying to cater for every possible use-case using a single Puppet module would result in huge mess. Some of the more widely used Puppet modules suffer from this "API explosion", which makes following the logic of the module very difficult.
+Some applications are by their nature very large and flexible. This results in an astronomic number of potential configuration option combinations. Trying to cater for every possible use-case using a single Puppet module would result in huge mess. Some of the more widely used Puppet modules suffer from this "API explosion", which makes following the logic of the module very difficult. Fortunately there are three levels on which this complexity can be managed.
 
-Fortunately there are three levels on which this complexity can be managed:
+Parameterization
+----------------
 
-  * *Parameterization*: commonly modified configuration options like "Allow SSH root login" can be safely parametrized.
-  * *Defining multiple module APIs*: typically a module's entrypoint (API) is it's main class, *init.pp*. There are, however, cases where a module serves several disparate use cases. For example, *openvpn::client* and *openvpn::server* configure OpenVPN clients and servers, respectively. While these two use cases are similar, there are enough configuration differences to warrant separate entrypoint classes. For example, a client would not need all the parameters a server needs, and using parameterization would result in having to define useless parameters for both use cases. In addition, the number of conditional code in the Puppet code would increase substantially.
-  * *Forking the module*: typically a module contains several subclasses which rarely change, and some which change often. In most cases *install*, *service*, *monit* and *packetfilter* subclasses are fairly static, whereas the *config* subclass is most prone to change. Forking a module typically means rewriting only the main class as well as the "config" subclass. Because every class is in it's own file, it is still possible to merge changes to the common parts (e.g. *install.pp*, *service.pp* or *monit.pp*).
+Configuration options that tend to change from site to site like "Allow SSH root login" in sshd can be safely parametrized. As long as only the most common changes are parameterized the API size will remain reasonable. 
+
+Defining multiple module entrypoints
+------------------------------------
+
+Typically a module's entrypoint (API) is it's main class, *init.pp*. There are, however, cases where a module serves several disparate use cases. A few typical examples below:
+
+  1. *Client-server software* such as OpenVPN requires significant configuration at both ends. While these two use cases are similar, there are enough configuration differences to warrant separate entrypoint classes. For example, a client would not need all the parameters a server needs, and using parameterization would result in having to define useless parameters for both use cases. This problem can be easily solved by using two entrypoint classes, *openvpn::client* and *openvpn::server*, and making them reuse the parts of the module they need.
+  1. *Automating backups* using cron requires adding parameters for the month, week, monthday, minute, hour, database name, dump tool options, etc. Having all of these parameters in the main class (init.pp) would make it's API much more messy. On top of this backups are often not even managed by Puppet. This means that having a separate *modulename::backup* class is a much cleaner approach.
+
+Defining multiple module entrypoints also keep the Puppet code much cleaner from confusing conditional code.
+
+Forking the module
+------------------
+
+Forking a module is a good option if the use-case for a module differs a lot from the originally envisioned one. Forking does not, however, mean that the modules go their own ways forever. Typically a module contains several subclasses which rarely change, and some which change often. In most cases *install*, *service*, *monit* and *packetfilter* subclasses are fairly static, whereas the *config* subclass is most prone to change. Forking a module typically means rewriting only the main class as well as the "config" subclass. Because every class is in it's own file, it is still possible to merge fixes and improvements to the common parts (e.g. *install.pp*, *service.pp* or *monit.pp*).
 
 Module structure
 ================
