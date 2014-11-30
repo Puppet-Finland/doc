@@ -1,11 +1,11 @@
 doc
 ===
 
-This repository contains documentation for the Puppet-Finland project:
+This repository contains documentation for the [Puppet-Finland](https://github.com/Puppet-Finland "Puppet-Finland") repository.
 
-  * https://github.com/Puppet-Finland
+In particular coding conventions and practices are covered in detail. This file is written using the [MarkDown syntax](http://daringfireball.net/projects/markdown/syntax "MarkDown syntax").
 
-In particular coding conventions and practices are covered in detail.
+This document is still work in progress, but the most important bits and pieces are there.
 
 Defining organizational policies
 ================================
