@@ -23,6 +23,9 @@ Global variables are used to provide default values for commonly repeating class
 Managing operating system differences
 =====================================
 
+Using params subclass
+---------------------
+
 Most operating system differences can be abstracted away using a *module::params* subclass. The purpose of the class is to convert things like file paths, package names and service names into variables, which can then be used directly in the Puppet classes. All other classes in the module inherit the params class. A typical example looks like this:
 
     class sshd::params {
@@ -57,7 +60,11 @@ The *modulenaname::params* approach has several benefits:
   * It isolates operating system -specific information into a single class, making the rest of the Puppet code much cleaner.
   * Trying to include the module on an unsupported operating system (see the "default" block) will result in failure instead of a misconfiguration.
 
-Use of a params class is not always enough, however:
+
+Conditionals in entrypoint class
+--------------------------------
+
+Use of a params class is not always enough to abstract away operating system differences. In particular
 
   * Some operating systems can't (in practice) be configured as fully as others.
   * Some operatings system require additional configuration steps.
@@ -90,7 +97,7 @@ A real-life example is shown below:
         }
     }
 
-This two-pronged approach to handling operating system differences has proven itself in practice.
+The two-pronged approach to handling operating system differences - params class and conditional statements - has proven itself in practice.
 
 Managing configuration complexity
 =================================
