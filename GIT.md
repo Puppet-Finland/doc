@@ -43,6 +43,11 @@ If you're using external Puppet modules it's advisable to fork them first and
 then use the fork. This ensures that external changes do not accidentally break 
 your nodes.
 
+I suggest fetching only providers and functions from the Puppet Forge using 
+"puppet module install <modulename>". The reason is that Git allows reviewing 
+the changes to the modules before pulling them in, as well as providing patches 
+to the original module author where necessary.
+
 Symbolic links
 --------------
 
