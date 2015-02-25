@@ -77,7 +77,7 @@ from Puppet-Finland on a regular basis. If the Puppet modules are Git submodules
 as recommended above, reviewing the changes is fairly easy.
 
     $ git submodule foreach "git fetch"
-    $ git submodule foreach "git diff origin/master"
+    $ git submodule foreach "git show master..origin"
 
 If the changes look innocent you can rebase the modules with upstream:
 
