@@ -82,3 +82,15 @@ as recommended above, reviewing the changes is fairly easy.
 If the changes look innocent you can rebase the modules with upstream:
 
     $ git submodule foreach "git pull --rebase origin"
+
+Puppet-Finland modules that are based on upstream modules need to be rebased 
+periodically. The first time you do this add "upstream" as a remote:
+
+    $ git remote add <upstream-git-repo-url>
+
+Once this is taken care off fetch the changes from upstream, review them and 
+then rebase:
+
+    $ git fetch upstream
+    $ git show master..upstream/master
+    $ git rebase upstream/master
