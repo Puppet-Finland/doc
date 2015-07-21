@@ -62,6 +62,17 @@ symbolic link to the directory so that Puppet module autoloader can find it:
 If you want to switch to another Git module later on you can simply replace the 
 symbolic link.
 
+Tagging versions
+----------------
+
+It is recommended to add a Git tag for each module version. For example, if at 
+some commit you set the module version to 0.5.3 in metadata.json, you should add 
+a matching Git tag after the commit:
+
+    $ git tag -a v0.5.3 -m "Version 0.5.3"
+
+This way tracking versions becomes much easier.
+
 Rebasing modules
 ----------------
 
