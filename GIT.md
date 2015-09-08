@@ -43,10 +43,35 @@ If you're using external Puppet modules it's advisable to fork them first and
 then use the fork. This ensures that external changes do not accidentally break 
 your nodes.
 
-I suggest fetching only providers and functions from the Puppet Forge using 
-"puppet module install <modulename>". The reason is that Git allows reviewing 
-the changes to the modules before pulling them in, as well as providing patches 
-to the original module author where necessary.
+With particularly complex yet high-level modules such as "puppetlabs/postgresql" 
+and "puppetlabs/puppetdb" it is safest to stick to released versions, as Git 
+version may be in a broken state or may break compatibility unexpectedly when 
+updated. First add the Puppet module as a Git submodule:
+
+    $ git submodule add https://github.com/Puppet-Finland/puppetlabs-puppetdb.git
+
+Then add a link to the correct module name:
+
+    $ ln -s puppetlabs-puppetdb puppetdb
+
+Then switch to the latest release branch:
+
+    $ git tag -l
+    1.0
+    1.0.1
+    --- snip ---
+    4.2.1
+    4.3.0
+    5.0.0
+    $ git checkout -b 5.0.0 tags/5.0.0
+    Switched to a new branch '5.0.0'
+
+Now you have two levels of protection against unexpected external changes.
+
+While the Puppet Forge is useful, I suggest only fetching providers and 
+functions from there. The reason is that Git allows proper review of changes 
+before they are pulled in to your environment. In addition using Git will allow 
+you to provide patches to the original module author more easily when necessary.
 
 Symbolic links
 --------------
