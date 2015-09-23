@@ -34,44 +34,33 @@ Each Puppet module should be a Git submodule for a number of reasons:
 * Puppet modules are typically in separate Git repositories anyways
 * Git submodules can be managed efficiently with built-in Git tools, unlike separate Git repositories
 * Adding, removing and replacing individual modules is easy
-* Eech site can include only those modules which it really needs
+* Each site can include only those modules which it really needs
 
 Using external Puppet modules
 -----------------------------
 
 If you're using external Puppet modules it's advisable to fork them first and 
-then use the fork. This ensures that external changes do not accidentally break 
-your nodes.
+then use the fork. This ensures that changes to these modules at the upstream 
+source do not accidentally break your nodes.
 
-With particularly complex yet high-level modules such as "puppetlabs/postgresql" 
-and "puppetlabs/puppetdb" it is safest to stick to released versions, as Git 
-version may be in a broken state or may break compatibility unexpectedly when 
-updated. First add the Puppet module as a Git submodule:
+My recommendation is to only use modules which are simple enough to review and 
+validate in a reasonable time. This rules out many complex, yet high-level 
+modules such as "puppetlabs/postgresql" and "puppetlabs/puppetdb". In my 
+experience those modules do not usually work regardless of what OS support they 
+claim. Even if they work initially, they tend to break in updates. Their 
+"master" or development branches are also in constant flux, which may cause 
+unexpected issues and makes reviewing changes tiresome. These are probably 
+inherent properties of large modules which try to support every possible 
+use-case. In any case, these modules are probably more high-maintenance than 
+your own custom module which does exactly what you need and nothing more. 
+Modules which consist mostly of types and providers (e.g. puppetlabs/apt) seem 
+to be more stable and much more useful.
 
-    $ git submodule add https://github.com/Puppet-Finland/puppetlabs-puppetdb.git
-
-Then add a link to the correct module name:
-
-    $ ln -s puppetlabs-puppetdb puppetdb
-
-Then switch to the latest release branch:
-
-    $ git tag -l
-    1.0
-    1.0.1
-    --- snip ---
-    4.2.1
-    4.3.0
-    5.0.0
-    $ git checkout -b 5.0.0 tags/5.0.0
-    Switched to a new branch '5.0.0'
-
-Now you have two levels of protection against unexpected external changes.
-
-While the Puppet Forge is useful, I suggest only fetching providers and 
-functions from there. The reason is that Git allows proper review of changes 
-before they are pulled in to your environment. In addition using Git will allow 
-you to provide patches to the original module author more easily when necessary.
+While the Puppet Forge is in theory quite useful, I suggest only fetching 
+providers and functions from there. The reason is that Git allows proper review 
+of changes _before_ they are pulled in to your environment. In addition using 
+Git will allow you to provide patches to the original module author more easily 
+when necessary.
 
 Symbolic links
 --------------
@@ -97,6 +86,14 @@ a matching Git tag after the commit:
     $ git tag -a v0.5.3 -m "Version 0.5.3"
 
 This way tracking versions becomes much easier.
+
+Merging changes from upstream
+-----------------------------
+
+To merge changes from an upstream repository to your own fork follow the instructions on GitHub:
+
+* https://help.github.com/articles/configuring-a-remote-for-a-fork/
+* https://help.github.com/articles/syncing-a-fork/
 
 Rebasing modules
 ----------------
