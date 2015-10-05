@@ -119,7 +119,7 @@ If the changes look innocent you can rebase the modules with upstream:
 Puppet-Finland modules that are based on upstream modules need to be rebased 
 periodically. The first time you do this add "upstream" as a remote:
 
-    $ git remote add <upstream-git-repo-url>
+    $ git remote add upstream <upstream-git-repo-url>
 
 Once this is taken care off fetch the changes from upstream, review them and 
 then rebase:
